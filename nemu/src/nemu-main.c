@@ -20,7 +20,36 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
+void init_regex();
+word_t expr(char*, bool*);
+
 int main(int argc, char *argv[]) {
+  init_regex();
+  FILE *fp = fopen("/home/zhao/ics2023/nemu/tools/gen-expr/test_file", "r");
+  assert(fp != NULL);
+
+  char expresion[1024];
+  word_t ref_val = -1;
+  int success_count = 0;
+  int failed_count = 0;
+  int i = 1;
+
+  while (fscanf(fp, "%u %[^\n]", &ref_val, expresion) != EOF) {
+    bool success = false;
+    
+    // printf("%s\n", expresion);
+
+    word_t ans = expr(expresion, &success);
+    if (success && ref_val == ans)
+      success_count += 1;
+    else
+      failed_count += 1;
+
+    // printf("%u\n", ans);
+    printf("%d\n", i++);
+
+  }
+
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
