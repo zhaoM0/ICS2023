@@ -20,7 +20,7 @@
  */
 #include <regex.h>
 
-// #define DEBUG_MODE
+#define DEBUG_MODE
 
 enum {
   TK_NOTYPE = 255, 
@@ -223,7 +223,6 @@ void display_expr(ssize_t st, ssize_t ed) {
 #endif
 
 static word_t eval(ssize_t st, ssize_t ed, bool* success) {
-  
   word_t ret = -1;
 
   if (st > ed) {
@@ -261,9 +260,8 @@ static word_t eval(ssize_t st, ssize_t ed, bool* success) {
     word_t lval, rval;
     
     lval = eval(st, mop - 1, &lexpr);
-    // Assert(lexpr, "illegal left expression\n");
     rval = eval(mop + 1, ed, &rexpr);
-    // Assert(rexpr, "illegal right expression\n");
+    Assert((lexpr && rexpr), "[%s] illegal right expression\n", __FILE__);
 
     switch (tokens[mop].type) {
       case '+': ret = lval + rval; break;
@@ -277,7 +275,7 @@ static word_t eval(ssize_t st, ssize_t ed, bool* success) {
 
 #ifdef DEBUG_MODE
   display_expr(st, ed);
-  printf(" = %d\n", ret);
+  printf(" = %u\n", ret);
 #endif
 
   *success = true;
